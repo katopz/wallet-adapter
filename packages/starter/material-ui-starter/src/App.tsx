@@ -1,10 +1,11 @@
 import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
 import { WalletDialogProvider, WalletMultiButton } from '@solana/wallet-adapter-material-ui';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { FakeWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { SolletExtensionWalletAdapter } from '@solana/wallet-adapter-sollet';
 import { clusterApiUrl } from '@solana/web3.js';
 import { useSnackbar } from 'notistack';
 import React, { FC, ReactNode, useCallback, useMemo } from 'react';
+import Tester from './Tester';
 import { Theme } from './Theme';
 
 export const App: FC = () => {
@@ -24,20 +25,7 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
     // You can also provide a custom RPC endpoint.
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-    const wallets = useMemo(
-        () => [
-            /**
-             * Select the wallets you wish to support, by instantiating wallet adapters here.
-             *
-             * Common adapters can be found in the npm package `@solana/wallet-adapter-wallets`.
-             * That package supports tree shaking and lazy loading -- only the wallets you import
-             * will be compiled into your application, and only the dependencies of wallets that
-             * your users connect to will be loaded.
-             */
-            new FakeWalletAdapter(),
-        ],
-        []
-    );
+    const wallets = useMemo(() => [new SolletExtensionWalletAdapter()], []);
 
     const { enqueueSnackbar } = useSnackbar();
     const onError = useCallback(
@@ -58,5 +46,5 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Content: FC = () => {
-    return <WalletMultiButton />;
+    return <div><WalletMultiButton /><Tester/></div>;
 };
